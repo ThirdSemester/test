@@ -26,9 +26,9 @@ public:
 	void add(cl_list*);
 	cl_list *same(cl_list*);
 	cl_list *remove(cl_list*);
-	//~cl_list();//вернуть перед отчетом, работает
-	void out();
+	//~cl_list();
 	void clear();
+	void out();
 };
 
 class cl_mass
@@ -43,7 +43,8 @@ public:
 	char *same(cl_mass*);
 	char *remove(char*);
 	void out();
-	~cl_mass();
+	//~cl_mass();
+	void clear();
 };
 
 list *mass_to_list(char, char*);

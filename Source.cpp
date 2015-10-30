@@ -1,6 +1,6 @@
 #include "Header.h"
 
-int main()//убрать this
+int main()
 {
 	setlocale(0, "");
 	char A[] = "АБЛДСЖ", B[] = "ВДГЖК", C[] = "ВДИКЖ", D[] = "ЫОКД", E[u + 1];
@@ -119,15 +119,20 @@ int main()//убрать this
 		Ecl.add((Bcl.same(&Ccl)->remove(&Dcl))->remove(&Acl));
 		Ecl.add(&Acl);
 		Ecl.out();
-		Ccl.clear();//убрать перед отчетом, деструктор работает
-		Dcl.clear();
 		Ecl.clear();
+		Ccl.clear();
+		Dcl.clear();
 	}
 	//-------------------------------Работа с объектами-массивами----------------------------------
 	{
 		Ecm.add(Acm.remove(Dcm.remove(Bcm.same(&Ccm))));
 		Ecm.add(&Acm);
 		Ecm.out();
+		Acm.clear();
+		Bcm.clear();
+		Ccm.clear();
+		Dcm.clear();
+		Ecm.clear();
 	}
 	memory_leaks();
 	system("pause");
@@ -216,7 +221,7 @@ void cl_list::add(cl_list *add_list)
 cl_list *cl_list::same(cl_list *another)
 {
 	cl_list *result = nullptr, *temp = nullptr, *temp_del = nullptr;
-	for (cl_list *temp1 = this->next; temp1;)
+	for (cl_list *temp1 = next; temp1;)
 		for (cl_list *temp2 = another->next; temp2; )
 			if (temp1->letter == temp2->letter)
 			{
@@ -243,7 +248,7 @@ cl_list *cl_list::same(cl_list *another)
 					delete temp_del;
 				}
 			}
-	temp->next = this->next = nullptr;
+	temp->next = next = nullptr;
 	return result;
 }
 
@@ -281,29 +286,29 @@ cl_list *cl_list::remove(cl_list *another)
 void cl_list::out()
 {
 	cout << letter<<" (список объектов): {";
-	for (cl_list *temp = this->next; temp; temp = temp->next)
+	for (cl_list *temp = next; temp; temp = temp->next)
 		cout << temp->letter;
 	cout << "}\n";
 }
 
 void cl_list::clear()
 {
-	if (this->next)
+	if (next)
 	{
-		this->next->clear();
-		delete this->next;
+		next->clear();
+		delete next;
 	}
 }
 
-//cl_list::~cl_list()
-//{
-//	if (this->letter > 0)
-//		if (this->next)
-//		{
-//			this->next->letter = 1;
-//			delete this->next;
-//		}
-//}
+/*cl_list::~cl_list()
+{
+	if (letter > 0)
+		if (next)
+		{
+			next->letter = 1;
+			delete next;
+		}
+}*/
 
 void memory_leaks()
 {
@@ -325,9 +330,9 @@ void clear(list *cl_list)
 
 cl_mass::cl_mass(char *mass)
 {
-	mass = new char[strlen(mass)+1];
-	for (int count = 0; mass[count]; mass[count] = mass[count], count++);
-	mass[strlen(mass)] = '\0';
+	this->mass = new char[strlen(mass)+1];
+	for (int count = 0; mass[count]; this->mass[count] = mass[count], count++);
+	this->mass[strlen(mass)] = '\0';
 }
 
 cl_mass::cl_mass()
@@ -342,7 +347,9 @@ void cl_mass::add(char *mass)
 
 void cl_mass::add(cl_mass *another)
 {
-	strcat(mass, another->mass);
+	int temp2 = strlen(mass);
+	for (int temp1 = 0; another->mass[temp1]; mass[temp2++] = another->mass[temp1++]);
+	mass[temp2] = '\0';
 }
 
 char *cl_mass::remove(char *result)
@@ -379,7 +386,12 @@ void cl_mass::out()
 	cout << "E (объект-массив): {" << mass << "}\n";
 }
 
-cl_mass::~cl_mass()
+void cl_mass::clear()
 {
-	delete this->mass;
+	delete mass;
 }
+
+/*cl_mass::~cl_mass()
+{
+	delete mass;
+}*/
