@@ -3,12 +3,6 @@
 using namespace std;
 const int u = 32; 
 
-#ifdef _DEBUG//Это для отслеживания утечек памяти
-#include <crtdbg.h>
-#define _CRTDBG_MAP_ALLOC
-#endif
-#define new new( _NORMAL_BLOCK, __FILE__, __LINE__)
-
 struct list
 {
 	char letter;
@@ -26,9 +20,8 @@ public:
 	void add(cl_list*);
 	cl_list *same(cl_list*);
 	cl_list *remove(cl_list*);
-	//~cl_list();//вернуть перед отчетом, работает
+	~cl_list();
 	void out();
-	void clear();
 };
 
 class cl_mass
@@ -49,6 +42,4 @@ public:
 list *mass_to_list(char, char*);
 unsigned long int mass_to_byte(char*);
 bool *mass_to_mb(char*);
-void out_word(unsigned long int);
-void memory_leaks();
 void clear(list*);
