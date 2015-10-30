@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include "time.h"
 using namespace std;
 const int u = 32; 
 
@@ -40,6 +41,7 @@ public:
 };
 
 list *mass_to_list(char, char*);
-unsigned long int mass_to_byte(char*);
+char *word_to_mass(unsigned long int);
 bool *mass_to_mb(char*);
 void clear(list*);
+void out_word(char, unsigned long int);

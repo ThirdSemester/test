@@ -3,12 +3,17 @@
 int main()
 {
 	setlocale(0, "");
-	char A[] = "АБЛДСЖ", B[] = "ВДГЖК", C[] = "ВДИКЖ", D[] = "ЫОКД", E[u + 1];
+	srand(time(0));
+	unsigned long int a = (rand() << 16) | rand(), b = (rand() << 16) | rand(), c = (rand() << 16) | rand(), d = (rand() << 16) | rand(), e;
+	char *A = word_to_mass(a), *B = word_to_mass(b), *C = word_to_mass(c), *D = word_to_mass(d), E[u + 1];
 	bool *Am = mass_to_mb(A), *Bm = mass_to_mb(B), *Cm = mass_to_mb(C), *Dm = mass_to_mb(D), Em[u];
 	list *Al = mass_to_list('A', A), *Bl = mass_to_list('B', B), *Cl = mass_to_list('C', C), *Dl = mass_to_list('D', D), *El = mass_to_list('E', nullptr), *temp = El, *temp_end, *del_temp;
-	unsigned long int a = mass_to_byte(A), b = mass_to_byte(B), c = mass_to_byte(C), d = mass_to_byte(D), e;
 	cl_list Acl('A', A), Bcl('B', B), Ccl('C', C), Dcl('D', D), Ecl('E', nullptr);
 	cl_mass Acm(A), Bcm(B), Ccm(C), Dcm(D), Ecm;
+	out_word('A', a);
+	out_word('B', b);
+	out_word('C', c);
+	out_word('D', d);
 	//-------------------------------Работа с массивом---------------------------------------------
 	{
 		short count = 0;
@@ -31,7 +36,11 @@ int main()
 				E[count++] = A[i];
 		}
 		E[count] = '\0';
-		cout << "E (массив) = {" << E << "}\n";
+		cout << "\nE (массив) = {" << E << "}\n";
+		delete A;
+		delete B;
+		delete C;
+		delete D;
 	}
 	//-------------------------------Работа со списком---------------------------------------------
 	{
@@ -99,7 +108,7 @@ int main()
 	//-------------------------------Работа с машинным словом--------------------------------------
 	{
 		e = ((b&c)&~d) | a;
-		out_word(e);
+		out_word('E', e);
 	}
 	//-------------------------------Работа с массивом битов---------------------------------------
 	{
@@ -130,6 +139,17 @@ int main()
 	return 0;
 }
 
+char *word_to_mass(unsigned long int word)
+{
+	char *result = new char[u];
+	int number = 0;
+	for (int count = 0; count < 32; count++)
+		if (word&(0x80000000 >> count))
+			result[number++] = char(count + 'А');
+	result[number] = '\0';
+	return result;
+}
+
 list *mass_to_list(char name, char *mass)
 {
 	list *result, *temp = nullptr;
@@ -147,14 +167,6 @@ list *mass_to_list(char name, char *mass)
 	return result;
 }
 
-unsigned long int mass_to_byte(char *mass)
-{
-	unsigned long int result = 0;
-	for (int count = 0; mass[count]; )
-		result = result | (0x80000000 >> (mass[count++] - 'А'));
-	return result;
-}
-
 bool *mass_to_mb(char *mass)
 {
 	bool *result=new bool[u];
@@ -163,9 +175,9 @@ bool *mass_to_mb(char *mass)
 	return result;
 }
 
-void out_word(unsigned long int word)
+void out_word(char name, unsigned long int word)
 {
-	cout << "Е (машинное слово): {";
+	cout << name<< " (машинное слово): {";
 	for (int count = 0; count < 32; count++)
 		if (word&(0x80000000 >> count))
 			cout << char(count + 'А');
@@ -250,7 +262,7 @@ cl_list *cl_list::remove(cl_list *another)
 		for (cl_list *temp2 = another->next; temp2;)
 			if (temp1->letter == temp2->letter)
 			{
-				if (temp1 == this)
+				if (temp1 == result)
 				{
 					result = result->next;
 					prev = result;
@@ -347,9 +359,9 @@ char *cl_mass::same(cl_mass *another)
 	int count = 0;
 	for (int temp1 = 0; mass[temp1]; temp1++)
 		for (int temp2 = 0; another->mass[temp2]; temp2++)
-			if (mass[count] == another->mass[count])
+			if (mass[temp1] == another->mass[temp2])
 			{
-				result[count] = mass[count];
+				result[count] = mass[temp1];
 				count++;
 			}
 	result[count] = '\0';
